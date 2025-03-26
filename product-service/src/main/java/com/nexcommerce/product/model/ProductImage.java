@@ -32,6 +32,18 @@ public class ProductImage {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    @Column(name = "file_name")
+    private String fileName;
+    
+    @Column(name = "original_file_name")
+    private String originalFileName;
+    
+    @Column(name = "file_size")
+    private Long fileSize;
+    
+    @Column(name = "mime_type")
+    private String mimeType;
+
     @Column(name = "alt_text")
     private String altText;
 

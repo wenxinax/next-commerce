@@ -35,7 +35,7 @@ public class ProductAttributeController {
     public ResponseEntity<ApiResponse<ProductAttributeDto>> createProductAttribute(
             @PathVariable Long productId,
             @Valid @RequestBody ProductAttributeDto attributeDto) {
-        log.info("创建产品属性请求，产品ID: {}, 属性名: {}", productId, attributeDto.getName());
+        log.info("创建产品属性请求，产品ID: {}, 属性名: {}", productId, attributeDto.getAttributeName());
         
         ProductAttributeDto createdAttribute = productAttributeService.createProductAttribute(productId, attributeDto);
         

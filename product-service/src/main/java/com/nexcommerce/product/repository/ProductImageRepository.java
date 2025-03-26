@@ -19,9 +19,31 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     List<ProductImage> findByProductIdOrderBySortOrderAsc(Long productId);
 
     /**
+     * 根据产品ID查找第一张图片（按排序顺序）
+     */
+    Optional<ProductImage> findFirstByProductIdOrderBySortOrderAsc(Long productId);
+
+    /**
+     * 根据产品ID查找所有图片
+     */
+    List<ProductImage> findByProductId(Long productId);
+
+    /**
      * 根据产品ID查找主图
      */
     Optional<ProductImage> findByProductIdAndIsPrimaryTrue(Long productId);
+
+    /**
+     * 重置产品的所有主图标志
+     */
+    @Query("UPDATE ProductImage pi SET pi.isPrimary = false WHERE pi.product.id = :productId")
+    void resetPrimaryImages(@Param("productId") Long productId);
+
+    /**
+     * 获取产品图片最大排序值
+     */
+    @Query("SELECT MAX(pi.sortOrder) FROM ProductImage pi WHERE pi.product.id = :productId")
+    Integer findMaxSortOrderByProductId(@Param("productId") Long productId);
 
     /**
      * 删除产品的所有图片

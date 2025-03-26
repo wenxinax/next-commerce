@@ -21,12 +21,12 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
     /**
      * 根据产品ID和属性名查找属性
      */
-    Optional<ProductAttribute> findByProductIdAndName(Long productId, String name);
+    Optional<ProductAttribute> findByProductIdAndAttributeName(Long productId, String attributeName);
 
     /**
      * 根据属性名和属性值查找属性
      */
-    List<ProductAttribute> findByNameAndValue(String name, String value);
+    List<ProductAttribute> findByAttributeNameAndAttributeValue(String attributeName, String attributeValue);
 
     /**
      * 删除产品的所有属性
@@ -36,6 +36,6 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
     /**
      * 获取指定属性名的所有不同值
      */
-    @Query("SELECT DISTINCT pa.value FROM ProductAttribute pa WHERE pa.name = :name")
-    List<String> findDistinctValuesByName(@Param("name") String name);
+    @Query("SELECT DISTINCT pa.attributeValue FROM ProductAttribute pa WHERE pa.attributeName = :attributeName")
+    List<String> findDistinctAttributeValuesByAttributeName(@Param("attributeName") String attributeName);
 }

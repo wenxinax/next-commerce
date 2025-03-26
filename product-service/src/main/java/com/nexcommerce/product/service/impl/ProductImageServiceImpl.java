@@ -88,7 +88,7 @@ public class ProductImageServiceImpl implements ProductImageService {
             // 创建图片记录
             ProductImage productImage = new ProductImage();
             productImage.setProduct(product);
-            productImage.setUrl(targetPath.toString());
+            productImage.setImageUrl(targetPath.toString());
             productImage.setFileName(uniqueFilename);
             productImage.setOriginalFileName(originalFilename);
             productImage.setFileSize(imageFile.getSize());
@@ -245,7 +245,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         
         // 删除物理文件
         try {
-            Path filePath = Paths.get(productImage.getUrl());
+            Path filePath = Paths.get(productImage.getImageUrl());
             if (Files.exists(filePath)) {
                 Files.delete(filePath);
             }
@@ -290,7 +290,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         // 删除所有物理文件
         for (ProductImage image : images) {
             try {
-                Path filePath = Paths.get(image.getUrl());
+                Path filePath = Paths.get(image.getImageUrl());
                 if (Files.exists(filePath)) {
                     Files.delete(filePath);
                 }
