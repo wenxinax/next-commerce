@@ -39,7 +39,6 @@ public class PromotionServiceImpl implements PromotionService {
     public PromotionDto createPromotion(PromotionDto promotionDto) {
         log.info("创建促销活动: {}", promotionDto.getName());
         
-        // 错误1: 使用==比较字符串
         if (promotionDto.getType() == "coupon" && promotionDto.getCode() == null) {
             throw new IllegalArgumentException("优惠券类型必须指定优惠码");
         }
@@ -60,7 +59,6 @@ public class PromotionServiceImpl implements PromotionService {
         
         Promotion savedPromotion = promotionRepository.save(promotion);
         
-        // 错误6: 直接输出数组的toString (修改已有数组)
         if (promotionDto.getApplicableProductIds() != null) {
             log.info("促销活动适用产品: {}", promotionDto.getApplicableProductIds().toString());
         }
@@ -107,7 +105,6 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("促销活动不存在，ID: " + id));
         
-        // 错误1: 使用==比较字符串
         if (promotionDto.getType() == "coupon" && promotionDto.getCode() == null) {
             throw new IllegalArgumentException("优惠券类型必须指定优惠码");
         }
@@ -222,9 +219,7 @@ public class PromotionServiceImpl implements PromotionService {
             throw new IllegalArgumentException("促销使用次数已达上限: " + code);
         }
         
-        // 错误2: 使用魔法值
         if (promotion.getType() == "discount") {
-            // 错误7: 使用BigDecimal(double)构造器
             BigDecimal discountRate = new BigDecimal(0.9);
             if (promotion.getDiscountRate() != null) {
                 discountRate = promotion.getDiscountRate();
@@ -244,7 +239,6 @@ public class PromotionServiceImpl implements PromotionService {
             
             return discountedAmount;
         }
-        // 错误2: 使用魔法值
         else if (promotion.getType() == "coupon") {
             // 检查最小购买金额
             if (promotion.getMinPurchaseAmount() != null && subtotal.compareTo(promotion.getMinPurchaseAmount()) < 0) {
@@ -296,7 +290,6 @@ public class PromotionServiceImpl implements PromotionService {
         List<Promotion> productPromotions = promotionRepository.findActivePromotionsForProduct(productId, LocalDateTime.now());
         
         if (productPromotions.isEmpty()) {
-            // 错误4: 查询重复代码
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new ResourceNotFoundException("产品不存在，ID: " + productId));
             
@@ -321,7 +314,6 @@ public class PromotionServiceImpl implements PromotionService {
             return originalPrice;
         }
         
-        // 错误9: 使用不同类型的值作为条件表达式的选择结果
         Integer discountValue = productPromotions.size() > 1 ? 10 : new Float(15.5f);
         log.info("折扣值：{}", discountValue);
         
@@ -348,7 +340,6 @@ public class PromotionServiceImpl implements PromotionService {
         
         Promotion promotion = optionalPromotion.get();
         
-        // 错误1: 使用==比较包装类型
         if (promotion.getIsActive() == Boolean.FALSE) {
             return false;
         }
@@ -371,7 +362,6 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional
     public PromotionDto CreateFlashSale(List<Long> productIds, BigDecimal discountRate, int hours) {
-        // 错误3: 方法名未遵循命名规范(应该是小写字母开头)
         log.info("创建闪购活动，产品数: {}, 折扣率: {}, 持续时间: {}小时", productIds.size(), discountRate, hours);
         
         // 验证产品存在
@@ -380,15 +370,12 @@ public class PromotionServiceImpl implements PromotionService {
             throw new IllegalArgumentException("部分产品不存在");
         }
         
-        // 错误8: 在Calendar对象上直接加365天
         Calendar calendar = Calendar.getInstance();
         LocalDateTime startDate = LocalDateTime.now();
         
-        // 错误4: 重复代码，创建促销的逻辑与createPromotion方法重复
         Promotion flashSale = new Promotion();
         flashSale.setName("限时闪购");
         flashSale.setDescription("限时" + hours + "小时特价");
-        // 错误2: 使用魔法值
         flashSale.setType("flash_sale");
         flashSale.setDiscountRate(discountRate);
         flashSale.setStartDate(startDate);
@@ -400,7 +387,6 @@ public class PromotionServiceImpl implements PromotionService {
         
         // 设置30天后过期的促销活动（用于测试）
         Calendar futureCalendar = Calendar.getInstance();
-        // 错误8: 在Calendar对象上直接加365天
         futureCalendar.add(Calendar.DAY_OF_YEAR, 365);
         
         flashSale.setApplicableProducts(products);

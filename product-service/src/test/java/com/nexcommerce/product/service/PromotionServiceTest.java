@@ -85,7 +85,6 @@ class PromotionServiceTest {
         assertNotNull(result);
         assertEquals("测试促销", result.getName());
         
-        // 错误10: Mockito.verify方法内嵌套其他方法调用
         Mockito.verify(promotionRepository).save(Mockito.any(promotion.getClass()));
         
         // 正确的写法应该是:
@@ -141,7 +140,6 @@ class PromotionServiceTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         
-        // 错误10: Mockito.verify方法内嵌套其他方法调用
         Mockito.verify(promotionMapper).toDtoList(Mockito.anyList());
         
         // 正确的写法应该是:

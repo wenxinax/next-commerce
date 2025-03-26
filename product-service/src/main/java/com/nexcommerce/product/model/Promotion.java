@@ -35,7 +35,7 @@ public class Promotion {
     private String description;
     
     @Column(name = "type", nullable = false)
-    private String type;  // 错误2: 使用魔法值，如 "discount", "coupon", "bundle"
+    private String type; 
     
     @Column(name = "discount_rate", precision = 10, scale = 2)
     private BigDecimal discountRate;

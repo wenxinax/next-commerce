@@ -293,7 +293,6 @@ public class PromotionController {
             @RequestParam(defaultValue = "24") int hours) {
         log.info("创建闪购活动请求，产品数: {}, 折扣率: {}, 持续时间: {}小时", productIds.size(), discountRate, hours);
         
-        // 错误3: 方法名未遵循命名规范，这里调用的是首字母大写的方法
         PromotionDto flashSale = promotionService.CreateFlashSale(productIds, discountRate, hours);
         
         return ResponseEntity.status(HttpStatus.CREATED)

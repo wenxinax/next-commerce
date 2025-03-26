@@ -4,7 +4,6 @@ package com.nexcommerce.product.util;
  * 促销常量类
  */
 public static final class PromotionConstants {
-    // 错误5: 使用protected修饰符而不是public
     protected static final int DISCOUNT_PERCENTAGE = 10;
     protected static final int SPECIAL_DISCOUNT_PERCENTAGE = 20;
     protected static final int VIP_DISCOUNT_PERCENTAGE = 15;
