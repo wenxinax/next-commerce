@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # MySQL - 主数据库
+  mysql:
+    image: mysql:8.0
+    container_name: nex-commerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nexcommerce
+      MYSQL_USER: nexcommerce
+      MYSQL_PASSWORD: nexcommerce
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - 缓存和会话存储
+  redis:
+    image: redis:7.0-alpine
+    container_name: nex-commerce-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --requirepass nexcommerce
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ - 消息队列
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: nex-commerce-rabbitmq
+    ports:
+      - "5672:5672"  # AMQP 协议端口
+      - "15672:15672"  # 管理界面端口
+    environment:
+      RABBITMQ_DEFAULT_USER: nexcommerce
+      RABBITMQ_DEFAULT_PASS: nexcommerce
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Elasticsearch - 搜索引擎
+  elasticsearch:
+    image: elasticsearch:8.10.2
+    container_name: nex-commerce-elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=false"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q 'status\":\"green\\|status\":\"yellow'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MongoDB - 日志和非结构化数据存储
+  mongodb:
+    image: mongo:6.0
+    container_name: nex-commerce-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nexcommerce
+      MONGO_INITDB_ROOT_PASSWORD: nexcommerce
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:
+  elasticsearch-data:
+  mongodb-data:

@@ -1,0 +1,33 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-service
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    # 不向自己注册服务
+    register-with-eureka: false
+    # 不从Eureka获取注册信息
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+  server:
+    # 关闭自我保护模式（对于开发环境）
+    enable-self-preservation: false
+    # 清理无效节点的时间间隔（毫秒）
+    eviction-interval-timer-in-ms: 30000
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS

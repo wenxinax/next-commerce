@@ -1,0 +1,54 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexcommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: nexcommerce
+    password: nexcommerce
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  redis:
+    host: localhost
+    port: 6379
+    password: nexcommerce
+    timeout: 10000
+    database: 1
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+# 产品服务特定配置
+product:
+  image:
+    max-size: 5MB  # 最大图片上传大小
+    allowed-types: image/jpeg,image/png,image/gif  # 允许的图片类型
+  cache:
+    ttl: 3600  # 缓存过期时间（秒）

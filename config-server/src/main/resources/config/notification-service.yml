@@ -1,0 +1,70 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexcommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: nexcommerce
+    password: nexcommerce
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: nexcommerce
+    password: nexcommerce
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: notification@example.com
+    password: your_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    mongodb:
+      uri: mongodb://nexcommerce:nexcommerce@localhost:27017/notification
+
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+# 通知服务特定配置
+notification:
+  email:
+    enabled: true
+    from: notification@example.com
+    template-path: classpath:/templates/email/
+  sms:
+    enabled: false
+    provider: aliyun
+  push:
+    enabled: false
+  retention:
+    days: 30  # 通知记录保留天数
