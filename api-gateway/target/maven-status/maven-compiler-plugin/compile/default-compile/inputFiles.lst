@@ -1,0 +1,4 @@
+/Users/luxwxin/CascadeProjects/nex-commerce/api-gateway/src/main/java/com/nexcommerce/gateway/config/RouteConfiguration.java
+/Users/luxwxin/CascadeProjects/nex-commerce/api-gateway/src/main/java/com/nexcommerce/gateway/config/CorsConfiguration.java
+/Users/luxwxin/CascadeProjects/nex-commerce/api-gateway/src/main/java/com/nexcommerce/gateway/ApiGatewayApplication.java
+/Users/luxwxin/CascadeProjects/nex-commerce/api-gateway/src/main/java/com/nexcommerce/gateway/filter/JwtAuthenticationFilter.java

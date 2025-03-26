@@ -22,6 +22,7 @@ public class ApiResponse<T> {
     private boolean success;
     private String message;
     private T data;
+    private Integer status;
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
     private String errorCode;

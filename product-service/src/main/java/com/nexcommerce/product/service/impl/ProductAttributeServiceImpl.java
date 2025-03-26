@@ -39,15 +39,15 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
     @Transactional
     public ProductAttributeDto createProductAttribute(Long productId, ProductAttributeDto attributeDto) {
-        log.info("创建产品属性，产品ID: {}, 属性名: {}", productId, attributeDto.getName());
+        log.info("创建产品属性，产品ID: {}, 属性名: {}", productId, attributeDto.getAttributeName());
         
         // 验证产品是否存在
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("产品不存在，ID: " + productId));
         
         // 检查属性名是否已存在
-        if (productAttributeRepository.findByProductIdAndName(productId, attributeDto.getName()).isPresent()) {
-            throw new IllegalArgumentException("产品属性名已存在: " + attributeDto.getName());
+        if (productAttributeRepository.findByProductIdAndAttributeName(productId, attributeDto.getAttributeName()).isPresent()) {
+            throw new IllegalArgumentException("产品属性名已存在: " + attributeDto.getAttributeName());
         }
         
         // 创建属性
@@ -78,12 +78,12 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         // 获取现有属性名
         List<String> existingAttributeNames = productAttributeRepository.findByProductId(productId)
                 .stream()
-                .map(ProductAttribute::getName)
+                .map(ProductAttribute::getAttributeName)
                 .collect(Collectors.toList());
         
         // 过滤出不存在的属性
         List<ProductAttributeDto> newAttributes = attributeDtos.stream()
-                .filter(dto -> !existingAttributeNames.contains(dto.getName()))
+                .filter(dto -> !existingAttributeNames.contains(dto.getAttributeName()))
                 .collect(Collectors.toList());
         
         if (newAttributes.size() < attributeDtos.size()) {
@@ -162,8 +162,8 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         
         return attributes.stream()
                 .collect(Collectors.toMap(
-                        ProductAttribute::getName,
-                        ProductAttribute::getValue
+                        ProductAttribute::getAttributeName,
+                        ProductAttribute::getAttributeValue
                 ));
     }
 
@@ -183,15 +183,15 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                 .orElseThrow(() -> new ResourceNotFoundException("产品属性不存在，ID: " + id));
         
         // 如果修改属性名，检查新名称是否与产品其他属性冲突
-        if (attributeDto.getName() != null && !attributeDto.getName().equals(attribute.getName())) {
+        if (attributeDto.getAttributeName() != null && !attributeDto.getAttributeName().equals(attribute.getAttributeName())) {
             Long productId = attribute.getProduct().getId();
-            if (productAttributeRepository.findByProductIdAndName(productId, attributeDto.getName()).isPresent()) {
-                throw new IllegalArgumentException("产品已存在同名属性: " + attributeDto.getName());
+            if (productAttributeRepository.findByProductIdAndAttributeName(productId, attributeDto.getAttributeName()).isPresent()) {
+                throw new IllegalArgumentException("产品已存在同名属性: " + attributeDto.getAttributeName());
             }
         }
         
         // 更新属性
-        productAttributeMapper.updateAttributeFromDto(attributeDto, attribute);
+        productAttributeMapper.updateProductAttributeFromDto(attributeDto, attribute);
         
         ProductAttribute updatedAttribute = productAttributeRepository.save(attribute);
         
@@ -213,7 +213,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         ProductAttribute attribute = productAttributeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("产品属性不存在，ID: " + id));
         
-        attribute.setValue(value);
+        attribute.setAttributeValue(value);
         
         ProductAttribute updatedAttribute = productAttributeRepository.save(attribute);
         
@@ -267,7 +267,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     public List<Long> findProductIdsByAttribute(String attributeName, String attributeValue) {
         log.info("根据属性搜索产品，属性名: {}, 属性值: {}", attributeName, attributeValue);
         
-        List<ProductAttribute> attributes = productAttributeRepository.findByNameAndValue(attributeName, attributeValue);
+        List<ProductAttribute> attributes = productAttributeRepository.findByAttributeNameAndAttributeValue(attributeName, attributeValue);
         
         return attributes.stream()
                 .map(attribute -> attribute.getProduct().getId())
@@ -286,6 +286,6 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     public List<String> getAttributeValues(String attributeName) {
         log.info("获取属性所有可能值，属性名: {}", attributeName);
         
-        return productAttributeRepository.findDistinctValuesByName(attributeName);
+        return productAttributeRepository.findDistinctAttributeValuesByAttributeName(attributeName);
     }
 }
