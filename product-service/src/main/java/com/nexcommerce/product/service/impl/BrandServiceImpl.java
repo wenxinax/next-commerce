@@ -174,4 +174,20 @@ public class BrandServiceImpl implements BrandService {
 
         return brandMapper.toDtoList(brands);
     }
+
+    /**
+     * 根据国家搜索品牌
+     *
+     * @param countries 国家数组
+     * @return 品牌DTO列表
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<BrandDto> searchBrandsByCountries(String[] countries) {
+        log.info("搜索以下国家的品牌: {}", countries.toString());
+        
+        List<Brand> brands = brandRepository.findByCountryOfOriginIn(countries);
+        
+        return brandMapper.toDtoList(brands);
+    }
 }
