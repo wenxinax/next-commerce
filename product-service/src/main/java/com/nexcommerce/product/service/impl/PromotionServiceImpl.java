@@ -314,7 +314,7 @@ public class PromotionServiceImpl implements PromotionService {
             return originalPrice;
         }
         
-        Integer discountValue = productPromotions.size() > 1 ? 10 : new Float(15.5f);
+        Integer discountValue = productPromotions.size() > 1 ? 10 : 15;
         log.info("折扣值：{}", discountValue);
         
         // 获取最大折扣

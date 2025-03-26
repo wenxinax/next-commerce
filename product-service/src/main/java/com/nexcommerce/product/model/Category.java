@@ -64,6 +64,15 @@ public class Category {
     private LocalDateTime updatedAt;
 
     /**
+     * 设置父类别
+     * 
+     * @param parent 父类别
+     */
+    public void setParent(Category parent) {
+        this.parent = parent;
+    }
+
+    /**
      * 添加子类别
      * 
      * @param childCategory 子类别

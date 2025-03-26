@@ -50,4 +50,12 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
      * @return 排序后的品牌列表
      */
     List<Brand> findAllByOrderBySortOrderAsc();
+    
+    /**
+     * 根据原产国查找品牌
+     *
+     * @param countries 原产国数组
+     * @return 品牌列表
+     */
+    List<Brand> findByCountryOfOriginIn(String[] countries);
 }
