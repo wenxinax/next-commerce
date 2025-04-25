@@ -25,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class ProductController {
 
     private final ProductService productService;
@@ -37,7 +38,7 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<ProductDto>> createProduct(@Valid @RequestBody ProductDto productDto) {
-        log.info("创建新产品请求: {}", productDto.getName());
+        log.info("创建新产品请求: {}", productDto.getName() != null ? productDto.getName().replaceAll("(?<=.{1}).", "*") : "null");
         ProductDto createdProduct = productService.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<ProductDto>builder()
@@ -91,18 +92,13 @@ public class ProductController {
      * @return 产品分页列表
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProductDto>>> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<ApiResponse<Page<ProductDto>>> getAllProducts(@Valid PageRequestDto pageRequestDto,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "ASC") String direction) {
-        log.info("获取所有产品请求，页码: {}, 每页大小: {}", page, size);
-        
-        Pageable pageable = PageRequest.of(page, size, 
+        log.info("获取所有产品请求，页码: {}, 每页大小: {}", pageRequestDto.getPage(), pageRequestDto.getSize());
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(),
                 Sort.by(Sort.Direction.fromString(direction), sortBy));
-        
         Page<ProductDto> products = productService.getAllProducts(pageable);
-        
         return ResponseEntity.ok(ApiResponse.<Page<ProductDto>>builder()
                 .status(HttpStatus.OK.value())
                 .message("获取产品列表成功")
@@ -331,18 +327,15 @@ public class ProductController {
      * @return 产品分页列表
      */
     @GetMapping("/filter")
-    public ResponseEntity<ApiResponse<Page<ProductDto>>> filterProducts(
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Long brandId,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        log.info("筛选产品请求: 类别ID={}, 品牌ID={}, 价格范围={}-{}", categoryId, brandId, minPrice, maxPrice);
-        
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDto> products = productService.getProductsByFilters(categoryId, brandId, minPrice, maxPrice, pageable);
-        
+    public ResponseEntity<ApiResponse<Page<ProductDto>>> filterProducts(@Valid ProductFilterRequestDto filterRequestDto) {
+        log.info("筛选产品请求: 类别ID={}, 品牌ID={}, 价格范围={}-{}", filterRequestDto.getCategoryId(), filterRequestDto.getBrandId(), filterRequestDto.getMinPrice(), filterRequestDto.getMaxPrice());
+        Pageable pageable = PageRequest.of(filterRequestDto.getPage(), filterRequestDto.getSize());
+        Page<ProductDto> products = productService.getProductsByFilters(
+            filterRequestDto.getCategoryId(),
+            filterRequestDto.getBrandId(),
+            filterRequestDto.getMinPrice(),
+            filterRequestDto.getMaxPrice(),
+            pageable);
         return ResponseEntity.ok(ApiResponse.<Page<ProductDto>>builder()
                 .status(HttpStatus.OK.value())
                 .message("筛选产品成功")
@@ -359,12 +352,10 @@ public class ProductController {
      */
     @PatchMapping("/{id}/stock")
     public ResponseEntity<ApiResponse<ProductDto>> updateProductStock(
-            @PathVariable Long id,
-            @RequestParam Integer quantityChange) {
+            @PathVariable @NotNull Long id,
+            @RequestParam @NotNull Integer quantityChange) {
         log.info("更新产品库存请求，ID: {}, 变化量: {}", id, quantityChange);
-        
         ProductDto updatedProduct = productService.updateProductStock(id, quantityChange);
-        
         return ResponseEntity.ok(ApiResponse.<ProductDto>builder()
                 .status(HttpStatus.OK.value())
                 .message("产品库存更新成功")
