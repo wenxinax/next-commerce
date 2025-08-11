@@ -70,4 +70,12 @@ public interface BrandService {
      * @return 品牌DTO列表
      */
     List<BrandDto> searchBrands(String keyword);
+
+    /**
+     * 根据国家搜索品牌
+     *
+     * @param countries 国家数组
+     * @return 品牌DTO列表
+     */
+    List<BrandDto> searchBrandsByCountries(String[] countries);
 }

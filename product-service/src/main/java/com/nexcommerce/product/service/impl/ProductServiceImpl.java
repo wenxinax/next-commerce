@@ -217,7 +217,6 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductDto> getProductsByCategoryId(Long categoryId, Pageable pageable) {
         log.info("获取类别下的产品，类别ID: {}", categoryId);
         
-        // 检查类别是否存在
         if (!categoryRepository.existsById(categoryId)) {
             throw new ResourceNotFoundException("类别不存在，ID: " + categoryId);
         }
@@ -239,7 +238,6 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductDto> getProductsByBrandId(Long brandId, Pageable pageable) {
         log.info("获取品牌下的产品，品牌ID: {}", brandId);
         
-        // 检查品牌是否存在
         if (!brandRepository.existsById(brandId)) {
             throw new ResourceNotFoundException("品牌不存在，ID: " + brandId);
         }
